@@ -1,10 +1,8 @@
 package p4pijk.lab2;
 
 import p4pijk.image.Image;
-import p4pijk.image.ImageImpl;
 import p4pijk.util.ImageTools;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -13,7 +11,7 @@ public class TrainingMatrix {
     private final Image first;
     private final Image second;
 
-    public TrainingMatrix(Image first, Image second){
+    public TrainingMatrix(Image first, Image second) {
         this.first = first;
         this.second = second;
     }

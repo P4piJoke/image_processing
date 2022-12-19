@@ -57,7 +57,9 @@ public class ReferenceGeometricVector {
             System.out.println("$ Data saving was failed. Try again. $");
             throw new RuntimeException(e);
         }
-        System.out.println("! Data saving was successful. Check file '" + ImageTools.RESULT_FILE.value() + "' !");
+        System.out.println("! Data saving was successful. Check file '" +
+                ImageTools.LAB4_PATH.value() +
+                ImageTools.RESULT_FILE.value() + "' !");
     }
 
     public String getVector(int[] vector, String name) {

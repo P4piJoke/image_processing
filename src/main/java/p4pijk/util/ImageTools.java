@@ -16,6 +16,8 @@ public enum ImageTools {
     SECOND_SK_PARA(SECOND_IMAGE.value() + " sk_para"),
     BOTH_SK( "Combined sk_para"),
     BOTH_SK_PARA("Combined sk_para"),
+    SHENON_CRITERIA("Shenon"),
+    KULBAK_CRITERIA("Kulbak"),
     LAB2_PATH("src\\main\\java\\p4pijk\\lab2\\"),
     LAB3_PATH("src\\main\\java\\p4pijk\\lab3\\"),
     LAB4_PATH("src\\main\\java\\p4pijk\\lab4\\"),
@@ -23,7 +25,7 @@ public enum ImageTools {
     LAB6_PATH("src\\main\\java\\p4pijk\\lab6\\"),
     RESULT_FILE("result.txt");
 
-    private String name;
+    private final String name;
     ImageTools(String name) {
         this.name = name;
     }

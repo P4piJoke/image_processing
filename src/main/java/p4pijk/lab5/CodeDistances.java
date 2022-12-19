@@ -16,28 +16,35 @@ import java.util.ArrayList;
 
 public class CodeDistances {
 
-    private static int dc;
-    private static double[] x;
-    private static double[] xX;
-    private static double[] y;
-    private static double[] yY;
+    private final int dc;
 
-    public static void main(String[] args) throws IOException {
-        dc = getSum(doABS(doMinus(ReferenceGeometricVector.getFirstGeometricVector(),
-                ReferenceGeometricVector.getSecondGeometricVector())));
+    private final double[] sk1;
+    private final double[] sk2;
+    private final double[] skPara1;
+    private final double[] skPara2;
+    private final double[] sk;
+    private final double[] skPara;
+    private final double[] x;
+    private final double[] xX;
+    private final double[] y;
+    private final double[] yY;
 
-        double[] sk1 = getSK(ReferenceGeometricVector.getFirstGeometricVector(),
-                BinaryTrainingMatrix.getFirstBinaryMatrix());
-        double[] sk2 = getSK(ReferenceGeometricVector.getFirstGeometricVector(),
-                BinaryTrainingMatrix.getSecondBinaryMatrix());
+    public CodeDistances(BinaryTrainingMatrix btm, ReferenceGeometricVector rgv) {
+        dc = getSum(doABS(doMinus(rgv.getFirstGeometricVector(),
+                rgv.getSecondGeometricVector())));
 
-        double[] skPara1 = getSK(ReferenceGeometricVector.getSecondGeometricVector(),
-                BinaryTrainingMatrix.getSecondBinaryMatrix());
-        double[] skPara2 = getSK(ReferenceGeometricVector.getSecondGeometricVector(),
-                BinaryTrainingMatrix.getFirstBinaryMatrix());
+        sk1 = setSK(rgv.getFirstGeometricVector(),
+                btm.getFirstBinaryMatrix());
+        sk2 = setSK(rgv.getFirstGeometricVector(),
+                btm.getSecondBinaryMatrix());
 
-        double[] sk = setSK(sk1, sk2);
-        double[] skPara = setSK(skPara1, skPara2);
+        skPara1 = setSK(rgv.getSecondGeometricVector(),
+                btm.getSecondBinaryMatrix());
+        skPara2 = setSK(rgv.getSecondGeometricVector(),
+                btm.getFirstBinaryMatrix());
+
+        sk = createSK(sk1, sk2);
+        skPara = createSK(skPara1, skPara2);
 
         x = setX(sk1, skPara2);
         xX = setX(skPara1, sk2);
@@ -46,23 +53,18 @@ public class CodeDistances {
         doReverse(50, 100, y);
         yY = setY(skPara1, x);
         doReverse(50, 100, yY);
-
-        saveDataToFile(sk1,skPara1,"1");
-        saveDataToFile(sk2,skPara2,"2");
-        saveDataToFile(sk,skPara,"");
-        createScatterPlot();
     }
 
-    private static void createScatterPlot() throws IOException {
+    public void createScatterPlot() throws IOException {
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         XYSeries centres = new XYSeries("Centres");
-        centres.add(0,0, true);
-        centres.add(dc,0, true);
+        centres.add(0, 0, true);
+        centres.add(dc, 0, true);
 
-        dataset.addSeries(fillData("Red",x,y));
+        dataset.addSeries(fillData("Red", x, y));
         dataset.addSeries(centres);
-        dataset.addSeries(fillData("Green", dcMinusX(),yY));
+        dataset.addSeries(fillData("Green", dcMinusX(), yY));
 
         JFreeChart scatterPlot = ChartFactory.createScatterPlot(
                 "Code Distances", // Chart title
@@ -72,53 +74,73 @@ public class CodeDistances {
         );
 
         ChartUtils.saveChartAsPNG(new File(
-                ImageTools.LAB5_PATH.value() +"scatterplot.png"),
+                        ImageTools.LAB5_PATH.value() + "scatterplot.png"),
                 scatterPlot,
                 800,
                 600);
     }
 
-    private static double[] dcMinusX() {
+    private double[] dcMinusX() {
         double[] temp = new double[xX.length];
-        for (int i = 0; i < temp.length; i++){
+        for (int i = 0; i < temp.length; i++) {
             temp[i] = dc - xX[i];
         }
         return temp;
     }
 
-    private static XYSeries fillData(String name, double[] x, double[] y) {
+    private XYSeries fillData(String name, double[] x, double[] y) {
         XYSeries data = new XYSeries(name);
-        for (int i = 0; i < x.length; i++){
-            data.add(x[i],y[i]);
+        for (int i = 0; i < x.length; i++) {
+            data.add(x[i], y[i]);
         }
         return data;
     }
 
-    public static int getDc() throws IOException {
-        if (dc == 0){
-            dc = getSum(doABS(doMinus(ReferenceGeometricVector.getFirstGeometricVector(),
-                    ReferenceGeometricVector.getSecondGeometricVector())));
-        }
+    public int getDc() {
         return dc;
     }
 
-    public static double[] getX() {
+    public double[] getSk1() {
+        return sk1;
+    }
+
+    public double[] getSk2() {
+        return sk2;
+    }
+
+    public double[] getSkPara1() {
+        return skPara1;
+    }
+
+    public double[] getSkPara2() {
+        return skPara2;
+    }
+
+    public double[] getSk() {
+        return sk;
+    }
+
+    public double[] getSkPara() {
+        return skPara;
+    }
+
+    public double[] getX() {
         return x;
     }
 
-    public static double[] getxX() {
+    public double[] getxX() {
         return xX;
     }
 
-    public static double[] getY() {
+    public double[] getY() {
         return y;
     }
 
-    public static double[] getyY() {
+    public double[] getyY() {
         return yY;
     }
 
-    private static double[] setY(double[] first, double[] second) {
+    private double[] setY(double[] first, double[] second) {
         double[] result = new double[first.length];
         for (int i = 0; i < result.length; i++) {
             double val = Math.pow(first[i], 2) - Math.pow(second[i], 2);
@@ -131,13 +153,13 @@ public class CodeDistances {
         return result;
     }
 
-    private static void doReverse(int start, int end, double[] src) {
+    private void doReverse(int start, int end, double[] src) {
         for (int i = start - 1; i < end; i++) {
             src[i] = -src[i];
         }
     }
 
-    private static double[] setX(double[] first, double[] second) {
+    private double[] setX(double[] first, double[] second) {
         double[] result = new double[first.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = (Math.pow(first[i], 2) - Math.pow(second[i], 2) + Math.pow(dc, 2)) / (2 * dc);
@@ -145,7 +167,7 @@ public class CodeDistances {
         return result;
     }
 
-    public static double[] getSK(int[] vector, int[][] binaryMatrix) {
+    public double[] setSK(int[] vector, int[][] binaryMatrix) {
         ArrayList<Double> sk = new ArrayList<>();
         for (int i = 0; i < vector.length; ++i) {
             sk.add((double) getSum(doABS(doMinus(vector, binaryMatrix[i]))));
@@ -154,14 +176,14 @@ public class CodeDistances {
         return sk.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
-    private static double[] setSK(double[] firstSK, double[] secondSK) {
+    private double[] createSK(double[] firstSK, double[] secondSK) {
         double[] resultedSK = new double[firstSK.length + secondSK.length];
         System.arraycopy(firstSK, 0, resultedSK, 0, firstSK.length);
         System.arraycopy(secondSK, 0, resultedSK, secondSK.length, secondSK.length);
         return resultedSK;
     }
 
-    private static int getSum(int[] array) {
+    private int getSum(int[] array) {
         int sum = 0;
         for (int val : array) {
             sum += val;
@@ -169,14 +191,14 @@ public class CodeDistances {
         return sum;
     }
 
-    private static int[] doABS(int[] array) {
+    private int[] doABS(int[] array) {
         for (int i = 0; i < array.length; ++i) {
             array[i] = Math.abs(array[i]);
         }
         return array;
     }
 
-    private static int[] doMinus(int[] first, int[] second) {
+    private int[] doMinus(int[] first, int[] second) {
         int[] result = new int[first.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = first[i] - second[i];
@@ -184,9 +206,9 @@ public class CodeDistances {
         return result;
     }
 
-    private static void saveDataToFile(double[] sk, double[] skPara, String name) {
+    public void saveDataToFile(double[] sk, double[] skPara, String name) {
         String skName, skParaName;
-        switch (name){
+        switch (name) {
             case "1":
                 skName = ImageTools.FIRST_SK.value();
                 skParaName = ImageTools.FIRST_SK_PARA.value();
@@ -200,17 +222,20 @@ public class CodeDistances {
                 skParaName = ImageTools.BOTH_SK_PARA.value();
         }
 
-        try (FileWriter result = new FileWriter(ImageTools.LAB5_PATH.value() + ImageTools.RESULT_FILE.value(),true)) {
+        try (FileWriter result = new FileWriter(ImageTools.LAB5_PATH.value()
+                + ImageTools.RESULT_FILE.value(),true)) {
             result.write(getSKAsString(sk, skName));
             result.write(getSKAsString(skPara, skParaName));
         } catch (IOException e) {
             System.out.println("$ Data saving was failed. Try again. $");
             throw new RuntimeException(e);
         }
-        System.out.println("! Data saving was successful. Check file '" + ImageTools.RESULT_FILE.value() + "' !");
+        System.out.println("! Data saving was successful. Check file '" +
+                ImageTools.LAB5_PATH.value() +
+                ImageTools.RESULT_FILE.value() + "' !");
     }
 
-    private static String getSKAsString(double[] sk, String name) {
+    public String getSKAsString(double[] sk, String name) {
         StringBuilder sb = new StringBuilder();
         sb.append("=========================\t")
                 .append(name)
