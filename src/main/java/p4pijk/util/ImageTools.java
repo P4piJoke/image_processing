@@ -4,6 +4,8 @@ public enum ImageTools {
 
     FIRST_IMAGE("1.bmp"),
     SECOND_IMAGE("2.bmp"),
+    THIRD_IMAGE("3.bmp"),
+    FOURTH_IMAGE("4.bmp"),
     FIRST_MATRIX(FIRST_IMAGE.value() + " matrix"),
     FIRST_BINARY_MATRIX(FIRST_IMAGE.value() + " binary matrix"),
     FIRST_GEOMETRIC_VECTOR(FIRST_IMAGE.value() + " geometric vector"),

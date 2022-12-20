@@ -176,6 +176,15 @@ public class CodeDistances {
         return sk.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
+    public double[] setSK(int[][] binaryMatrix, int[] vector) {
+        ArrayList<Double> sk = new ArrayList<>();
+        for (int[] matrix : binaryMatrix) {
+            sk.add((double) getSum(doMinus(doABS(matrix), vector)));
+        }
+
+        return sk.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+
     private double[] createSK(double[] firstSK, double[] secondSK) {
         double[] resultedSK = new double[firstSK.length + secondSK.length];
         System.arraycopy(firstSK, 0, resultedSK, 0, firstSK.length);
@@ -223,7 +232,7 @@ public class CodeDistances {
         }
 
         try (FileWriter result = new FileWriter(ImageTools.LAB5_PATH.value()
-                + ImageTools.RESULT_FILE.value(),true)) {
+                + ImageTools.RESULT_FILE.value(), true)) {
             result.write(getSKAsString(sk, skName));
             result.write(getSKAsString(skPara, skParaName));
         } catch (IOException e) {

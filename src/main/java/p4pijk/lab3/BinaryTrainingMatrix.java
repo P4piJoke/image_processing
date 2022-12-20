@@ -15,15 +15,25 @@ public class BinaryTrainingMatrix {
     private final int delta;
     private final int[][] firstBinaryMatrix;
     private final int[][] secondBinaryMatrix;
+    private final double[] lowerControlTolerance;
+    private final double[] upperControlTolerance;
 
     public BinaryTrainingMatrix(Image first, Image second, int delta) {
         this.delta = delta;
 
-        double[] lowerControlTolerance = getLCT(first.getPixelsMatrix());
-        double[] upperControlTolerance = getUCT(first.getPixelsMatrix());
+        lowerControlTolerance = getLCT(first.getPixelsMatrix());
+        upperControlTolerance = getUCT(first.getPixelsMatrix());
 
         firstBinaryMatrix = getBinaryMatrix(first.getPixelsMatrix(), lowerControlTolerance, upperControlTolerance);
         secondBinaryMatrix = getBinaryMatrix(second.getPixelsMatrix(), lowerControlTolerance, upperControlTolerance);
+    }
+
+    public double[] getLowerControlTolerance() {
+        return lowerControlTolerance;
+    }
+
+    public double[] getUpperControlTolerance() {
+        return upperControlTolerance;
     }
 
     public int[][] getFirstBinaryMatrix() {
@@ -57,7 +67,7 @@ public class BinaryTrainingMatrix {
                 new File(ImageTools.LAB3_PATH.value() + fullName));
     }
 
-    private static boolean[] convertMatrixToBinary(int[][] matrix) {
+    private boolean[] convertMatrixToBinary(int[][] matrix) {
         ArrayList<Boolean> tempBinary = new ArrayList<>();
         for (int[] ints : matrix) {
             for (int j = 0; j < matrix.length; j++) {
@@ -71,7 +81,7 @@ public class BinaryTrainingMatrix {
         return binaryMatrix;
     }
 
-    private static int[][] getBinaryMatrix(int[][] matrix, double[] lower, double[] upper) {
+    private int[][] getBinaryMatrix(int[][] matrix, double[] lower, double[] upper) {
         int[][] binaryMatrix = new int[lower.length][lower.length];
         for (int i = 0, j = 0; i < binaryMatrix.length; j++) {
             binaryMatrix[i][j] = (matrix[i][j] >= lower[j] && matrix[i][j] <= upper[j]) ? 1 : 0;
@@ -84,7 +94,7 @@ public class BinaryTrainingMatrix {
         return binaryMatrix;
     }
 
-    private double[] getLCT(int[][] pixelsMatrix) {
+    public double[] getLCT(int[][] pixelsMatrix) {
         double[] lower = new double[100];
         for (int i = 0, j = 0; i < lower.length; ++j) {
             lower[j] += pixelsMatrix[i][j];
@@ -99,7 +109,7 @@ public class BinaryTrainingMatrix {
         return lower;
     }
 
-    private double[] getUCT(int[][] pixelsMatrix) {
+    public double[] getUCT(int[][] pixelsMatrix) {
         double[] upper = new double[100];
         for (int i = 0, j = 0; i < upper.length; ++j) {
             upper[j] += pixelsMatrix[i][j];
