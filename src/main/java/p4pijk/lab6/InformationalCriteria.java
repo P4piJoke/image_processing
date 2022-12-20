@@ -32,15 +32,15 @@ public class InformationalCriteria {
     }
 
     public double[] getCriteria(ImageTools criteria) {
-        return new Criteria(criteria.value()).getCriteria();
+        return new Criteria(criteria).getCriteria();
     }
 
     public double getMax(ImageTools criteria) {
-        return new Criteria(criteria.value()).getMax();
+        return new Criteria(criteria).getMax();
     }
 
     public int[] getOptRadius(ImageTools criteria) {
-        return new Criteria(criteria.value()).getOptRadius();
+        return new Criteria(criteria).getOptRadius();
     }
 
     public double[] getD1() {
@@ -157,13 +157,13 @@ public class InformationalCriteria {
         private final double max;
         private final int[] optRadius;
 
-        public Criteria(String type) {
-            switch (type) {
-                case "Shenon":
+        public Criteria(ImageTools name) {
+            switch (name) {
+                case SHENON_CRITERIA:
                     criteria = setShenon();
 
                     break;
-                case "Kulbak":
+                case KULBAK_CRITERIA:
                     criteria = setKulbak();
                     break;
                 default:
@@ -209,9 +209,9 @@ public class InformationalCriteria {
         }
 
         private double setMax() {
-            double tempMax = criteria[robObl[0]];
+            double tempMax = Double.MIN_VALUE;
             for (int i : robObl) {
-                tempMax = Math.max(criteria[i], tempMax);
+                tempMax = Math.max(criteria[i - 1], tempMax);
             }
             return tempMax;
         }

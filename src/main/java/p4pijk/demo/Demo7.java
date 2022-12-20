@@ -15,21 +15,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class Demo {
+public class Demo7 {
 
     public static void main(String[] args) throws IOException {
         Image firstImage = new ImageImpl(new File(ImageTools.FIRST_IMAGE.value()));
         Image secondImage = new ImageImpl(new File(ImageTools.SECOND_IMAGE.value()));
+        SystemOptimization systemOptimization = new SystemOptimization(firstImage, secondImage);
 
-        //lab2
         TrainingMatrix trainingMatrix = new TrainingMatrix(firstImage, secondImage);
 
         System.out.println(trainingMatrix.getPixelMatrix(firstImage, ImageTools.FIRST_IMAGE.value()));
         System.out.println(trainingMatrix.getPixelMatrix(secondImage, ImageTools.SECOND_IMAGE.value()));
         trainingMatrix.saveDataToFile();
 
-        // lab3
-        BinaryTrainingMatrix btm = new BinaryTrainingMatrix(firstImage, secondImage, 100);
+        BinaryTrainingMatrix btm = new BinaryTrainingMatrix(firstImage, secondImage, systemOptimization.getOptimalDelta());
 
         int[][] firstBinaryMatrix = btm.getFirstBinaryMatrix();
         int[][] secondBinaryMatrix = btm.getSecondBinaryMatrix();
@@ -40,7 +39,6 @@ public class Demo {
         System.out.println(btm.printBinaryMatrix(secondBinaryMatrix, ImageTools.SECOND_BINARY_MATRIX.value()));
         btm.saveDataToFile(firstBinaryMatrix, secondBinaryMatrix);
 
-        // lab4
         ReferenceGeometricVector rgv = new ReferenceGeometricVector(btm);
 
         int[] firstVector = rgv.getFirstGeometricVector();
@@ -49,7 +47,6 @@ public class Demo {
         rgv.getVector(firstVector, ImageTools.FIRST_GEOMETRIC_VECTOR.value());
         rgv.getVector(secondVector, ImageTools.SECOND_GEOMETRIC_VECTOR.value());
 
-        // lab5
         CodeDistances cd = new CodeDistances(btm, rgv);
 
         double[] sk1 = cd.getSk1();
@@ -74,16 +71,12 @@ public class Demo {
         cd.saveDataToFile(sk, skPara, "");
         cd.createScatterPlot();
 
-        // lab6
-        // Doted characteristics 1
         InformationalCriteria ic1 = new InformationalCriteria(cd, cd.getSk1(), cd.getSk2());
 
         int[] robObl1 = ic1.getRobObl();
 
-        // Shenon 1
         double[] shenon1 = ic1.getCriteria(ImageTools.SHENON_CRITERIA);
 
-        // Kulbak 1
         double[] kulbak1 = ic1.getCriteria(ImageTools.KULBAK_CRITERIA);
 
         ic1.saveArea(shenon1, robObl1, ImageTools.SHENON_CRITERIA.value() + "1",
@@ -93,15 +86,12 @@ public class Demo {
                 ImageTools.KULBAK_CRITERIA.value() + "'s",
                 ImageTools.KULBAK_CRITERIA.value() + "1.png");
 
-        // Doted characteristics 2
         InformationalCriteria ic2 = new InformationalCriteria(cd, cd.getSkPara1(), cd.getSkPara2());
 
         int[] robObl2 = ic2.getRobObl();
 
-        // Shenon 2
         double[] shenon2 = ic2.getCriteria(ImageTools.SHENON_CRITERIA);
 
-        // Kulbak 2
         double[] kulbak2 = ic2.getCriteria(ImageTools.KULBAK_CRITERIA);
 
         ic1.saveArea(shenon2, robObl2, ImageTools.SHENON_CRITERIA.value() + "2",
@@ -110,15 +100,5 @@ public class Demo {
         ic1.saveArea(kulbak2, robObl2, ImageTools.KULBAK_CRITERIA.value() + "2",
                 ImageTools.KULBAK_CRITERIA.value() + "'s",
                 ImageTools.KULBAK_CRITERIA.value() + "2.png");
-
-        // lab7
-        SystemOptimization systemOptimization = new SystemOptimization(firstImage, secondImage);
-        System.out.println("Optimal delta: " + systemOptimization.getOptimalDelta());
-        systemOptimization.saveArea(systemOptimization.getShenonDelta()
-                , systemOptimization.getRobObl()
-                , ImageTools.OPTIMAL_DELTA.value()
-                , ImageTools.OPTIMAL_DELTA.value()
-                , ImageTools.OPTIMAL_DELTA.value() + ".png"
-        );
     }
 }

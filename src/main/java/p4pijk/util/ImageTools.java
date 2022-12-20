@@ -14,23 +14,26 @@ public enum ImageTools {
     SECOND_GEOMETRIC_VECTOR(SECOND_IMAGE.value() + " geometric vector"),
     SECOND_SK(SECOND_IMAGE.value() + " sk"),
     SECOND_SK_PARA(SECOND_IMAGE.value() + " sk_para"),
-    BOTH_SK( "Combined sk_para"),
+    BOTH_SK("Combined sk_para"),
     BOTH_SK_PARA("Combined sk_para"),
     SHENON_CRITERIA("Shenon"),
     KULBAK_CRITERIA("Kulbak"),
+    OPTIMAL_DELTA("Delta"),
     LAB2_PATH("src\\main\\java\\p4pijk\\lab2\\"),
     LAB3_PATH("src\\main\\java\\p4pijk\\lab3\\"),
     LAB4_PATH("src\\main\\java\\p4pijk\\lab4\\"),
     LAB5_PATH("src\\main\\java\\p4pijk\\lab5\\"),
     LAB6_PATH("src\\main\\java\\p4pijk\\lab6\\"),
+    LAB7_PATH("src\\main\\java\\p4pijk\\lab7\\"),
     RESULT_FILE("result.txt");
 
     private final String name;
+
     ImageTools(String name) {
         this.name = name;
     }
 
-    public String value(){
+    public String value() {
         return name;
     }
 }
